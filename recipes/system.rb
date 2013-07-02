@@ -1,7 +1,8 @@
 #
-# Cookbook Name:: rbenv
+# Cookbook Name:: nodenv
 # Recipe:: system
 #
+# Copyright 2013, John Bellone
 # Copyright 2010, 2011 Fletcher Nichol
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
@@ -17,29 +18,29 @@
 # limitations under the License.
 #
 
-include_recipe "rbenv::system_install"
+include_recipe "nodenv::system_install"
 
-Array(node['rbenv']['rubies']).each do |rubie|
-  if rubie.is_a?(Hash)
-    rbenv_ruby rubie['name'] do
-      environment rubie['environment'] if rubie['environment']
+Array(node['nodenv']['nodes']).each do |node|
+  if node.is_a?(Hash)
+    nodenv_node node['name'] do
+      environment node['environment'] if node['environment']
     end
   else
-    rbenv_ruby rubie
+    nodenv_node node
   end
 end
 
-if node['rbenv']['global']
-  rbenv_global node['rbenv']['global']
+if node['nodenv']['global']
+  nodenv_global node['nodenv']['global']
 end
 
-node['rbenv']['gems'].each_pair do |rubie, gems|
-  Array(gems).each do |gem|
-    rbenv_gem gem['name'] do
-      rbenv_version rubie
+node['nodenv']['nodes'].each_pair do |node, gems|
+  Array(gems).each do |npm|
+    nodenv_npm npm['name'] do
+      nodenv_version node
 
       %w{version action options source}.each do |attr|
-        send(attr, gem[attr]) if gem[attr]
+        send(attr, npm[attr]) if npm[attr]
       end
     end
   end

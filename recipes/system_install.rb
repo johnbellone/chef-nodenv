@@ -1,7 +1,8 @@
 #
-# Cookbook Name:: rbenv
+# Cookbook Name:: nodenv
 # Recipe:: system_install
 #
+# Copyright 2013, John Bellone
 # Copyright 2011, Fletcher Nichol
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
@@ -17,27 +18,27 @@
 # limitations under the License.
 #
 
-include_recipe 'rbenv'
+include_recipe 'nodenv'
 
-upgrade_strategy  = build_upgrade_strategy(node['rbenv']['upgrade'])
-git_url           = node['rbenv']['git_url']
-git_ref           = node['rbenv']['git_ref']
-rbenv_prefix      = node['rbenv']['root_path']
+upgrade_strategy  = build_upgrade_strategy(node['nodenv']['upgrade'])
+git_url           = node['nodenv']['git_url']
+git_ref           = node['nodenv']['git_ref']
+nodenv_prefix     = node['nodenv']['root_path']
 
-install_rbenv_pkg_prereqs
+install_nodenv_pkg_prereqs
 
 directory "/etc/profile.d" do
   owner   "root"
   mode    "0755"
 end
 
-template "/etc/profile.d/rbenv.sh" do
-  source  "rbenv.sh.erb"
+template "/etc/profile.d/nodenv.sh" do
+  source  "nodenv.sh.erb"
   owner   "root"
   mode    "0755"
 end
 
-install_or_upgrade_rbenv  :rbenv_prefix => rbenv_prefix,
+install_or_upgrade_nodenv :nodenv_prefix => nodenv_prefix,
                           :git_url => git_url,
                           :git_ref => git_ref,
                           :upgrade_strategy => upgrade_strategy

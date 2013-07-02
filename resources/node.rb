@@ -1,9 +1,10 @@
 #
-# Cookbook Name:: rbenv
-# Resource:: gem
+# Cookbook Name:: nodenv
+# Resource:: node
 #
 # Author:: Fletcher Nichol <fnichol@nichol.ca>
 #
+# Copyright 2013, John Bellone
 # Copyright 2011, Fletcher Nichol
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
@@ -19,22 +20,20 @@
 # limitations under the License.
 #
 
-actions :install, :upgrade, :remove, :purge
+actions :install, :reinstall
 
-attribute :package_name,  :kind_of => String, :name_attribute => true
-attribute :rbenv_version, :kind_of => String, :default => "global"
-attribute :version,       :kind_of => String
-attribute :response_file, :kind_of => String
-attribute :source,        :kind_of => String
-attribute :options,       :kind_of => [String, Hash]
-attribute :gem_binary,    :kind_of => String
-attribute :user,          :kind_of => String
-attribute :root_path,     :kind_of => String
-
-include Chef::Rbenv::Mixin::ResourceString
+attribute :definition,  :kind_of => String, :name_attribute => true
+attribute :definition_file,	:kind_of => String
+attribute :root_path,   :kind_of => String
+attribute :user,        :kind_of => String
+attribute :environment, :kind_of => Hash
 
 def initialize(*args)
   super
   @action = :install
-  @provider = Chef::Provider::Package::RbenvRubygems
+  @nodenv_version = @definition
+end
+
+def to_s
+  "#{super} (#{@user || 'system'})"
 end

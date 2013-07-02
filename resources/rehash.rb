@@ -1,9 +1,10 @@
 #
-# Cookbook Name:: rbenv
+# Cookbook Name:: nodenv
 # Resource:: rehash
 #
 # Author:: Fletcher Nichol <fnichol@nichol.ca>
 #
+# Copyright 2013, John Bellone
 # Copyright 2011, Fletcher Nichol
 #
 # Licensed under the Apache License, Version 2.0 (the "License");

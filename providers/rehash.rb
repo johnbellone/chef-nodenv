@@ -1,5 +1,5 @@
 #
-# Cookbook Name:: rbenv
+# Cookbook Name:: nodenv
 # Provider:: rehash
 #
 # Author:: Fletcher Nichol <fnichol@nichol.ca>
@@ -19,12 +19,12 @@
 # limitations under the License.
 #
 
-include Chef::Rbenv::ScriptHelpers
+include Chef::Nodenv::ScriptHelpers
 
 action :run do
-  command = %{rbenv rehash}
+  command = %{nodenv rehash}
 
-  rbenv_script "#{command} #{which_rbenv}" do
+  nodenv_script "#{command} #{which_nodenv}" do
     code        command
     user        new_resource.user       if new_resource.user
     root_path   new_resource.root_path  if new_resource.root_path

@@ -1,9 +1,10 @@
 #
-# Cookbook Name:: rbenv
-# Provider:: ruby
+# Cookbook Name:: nodenv
+# Provider:: node
 #
 # Author:: Fletcher Nichol <fnichol@nichol.ca>
 #
+# Copyright 2013, John Bellone
 # Copyright 2011, Fletcher Nichol
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
@@ -19,7 +20,7 @@
 # limitations under the License.
 #
 
-include Chef::Rbenv::ScriptHelpers
+include Chef::Nodenv::ScriptHelpers
 
 def load_current_resource
   @rubie      = new_resource.definition
@@ -40,31 +41,29 @@ end
 private
 
 def perform_install
-  if ruby_build_missing?
+  if node_build_missing?
     Chef::Log.warn(
-      "ruby_build cookbook is missing. Please add to the run_list (Action will be skipped).")
-  elsif ruby_installed?
+      "node_build cookbook is missing. Please add to the run_list (Action will be skipped).")
+  elsif node_installed?
     Chef::Log.debug("#{new_resource} is already installed - nothing to do")
   else
     install_start = Time.now
 
-    install_ruby_dependencies
-
     Chef::Log.info("Building #{new_resource}, this could take a while...")
 
     # bypass block scoping issues
-    rbenv_user    = @user
+    nodenv_user    = @user
     rubie         = @rubie
     definition    = @definition_file || @rubie
-    rbenv_prefix  = @root_path
-    rbenv_env     = @environment
-    command       = %{rbenv install #{definition}}
+    nodenv_prefix  = @root_path
+    nodenv_env     = @environment
+    command       = %{nodenv install #{definition}}
 
-    rbenv_script "#{command} #{which_rbenv}" do
+    nodenv_script "#{command} #{which_nodenv}" do
       code        command
-      user        rbenv_user    if rbenv_user
-      root_path   rbenv_prefix  if rbenv_prefix
-      environment rbenv_env     if rbenv_env
+      user        nodenv_user    if nodenv_user
+      root_path   nodenv_prefix  if nodenv_prefix
+      environment nodenv_env     if nodenv_env
 
       action      :nothing
     end.run_action(:run)
@@ -76,44 +75,14 @@ def perform_install
   end
 end
 
-def ruby_installed?
+def node_installed?
   if Array(new_resource.action).include?(:reinstall)
     false
   else
-    ::File.directory?(::File.join(rbenv_root, 'versions', @rubie))
+    ::File.directory?(::File.join(nodenv_root, 'versions', @rubie))
   end
 end
 
-def ruby_build_missing?
-  ! run_context.loaded_recipe?("ruby_build")
-end
-
-def install_ruby_dependencies
-  definition = ::File.basename(new_resource.definition)
-
-  case definition
-  when /^\d\.\d\.\d-/, /^rbx-/, /^ree-/
-    pkgs = node['ruby_build']['install_pkgs_cruby']
-  when /^jruby-/
-    pkgs = node['ruby_build']['install_pkgs_jruby']
-  end
-
-  Array(pkgs).each do |pkg|
-    package pkg do
-      action :nothing
-    end.run_action(:install)
-  end
-
-  ensure_java_environment if definition =~ /^jruby-/
-end
-
-def ensure_java_environment
-  begin
-    resource_collection.find(
-      "ruby_block[update-java-alternatives]"
-    ).run_action(:create)
-  rescue Chef::Exceptions::ResourceNotFound
-    # have pity on my soul
-    Chef::Log.info "The java cookbook does not appear to in the run_list."
-  end
+def node_build_missing?
+  ! run_context.loaded_recipe?("node_build")
 end

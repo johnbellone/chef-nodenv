@@ -1,9 +1,10 @@
 #
-# Cookbook Name:: rbenv
+# Cookbook Name:: nodenv
 # Resource:: global
 #
 # Author:: Fletcher Nichol <fnichol@nichol.ca>
 #
+# Copyright 2013, John Bellone
 # Copyright 2011, Fletcher Nichol
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
@@ -21,7 +22,7 @@
 
 actions :create
 
-attribute :rbenv_version, :kind_of => String, :name_attribute => true
+attribute :nodenv_version, :kind_of => String, :name_attribute => true
 attribute :user,          :kind_of => String
 attribute :root_path,     :kind_of => String
 

@@ -1,5 +1,5 @@
 #
-# Cookbook Name:: rbenv
+# Cookbook Name:: nodenv
 # Provider:: global
 #
 # Author:: Fletcher Nichol <fnichol@nichol.ca>
@@ -19,13 +19,13 @@
 # limitations under the License.
 #
 
-include Chef::Rbenv::ScriptHelpers
+include Chef::Nodenv::ScriptHelpers
 
 action :create do
-  if current_global_version != new_resource.rbenv_version
-    command = %{rbenv global #{new_resource.rbenv_version}}
+  if current_global_version != new_resource.nodenv_version
+    command = %{nodenv global #{new_resource.nodenv_version}}
 
-    rbenv_script "#{command} #{which_rbenv}" do
+    nodenv_script "#{command} #{which_nodenv}" do
       code        command
       user        new_resource.user       if new_resource.user
       root_path   new_resource.root_path  if new_resource.root_path

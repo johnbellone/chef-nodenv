@@ -1,9 +1,10 @@
 #
-# Cookbook Name:: rbenv
+# Cookbook Name:: nodenv
 # Provider:: script
 #
 # Author:: Fletcher Nichol <fnichol@nichol.ca>
 #
+# Copyright 2013, John Bellone
 # Copyright 2011, Fletcher Nichol
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
@@ -19,7 +20,7 @@
 # limitations under the License.
 #
 
-include Chef::Rbenv::ScriptHelpers
+include Chef::Nodenv::ScriptHelpers
 
 action :run do
   script_code         = build_script_code
@@ -46,18 +47,18 @@ private
 
 def build_script_code
   script = []
-  script << %{export RBENV_ROOT="#{rbenv_root}"}
-  script << %{export PATH="${RBENV_ROOT}/bin:$PATH"}
-  script << %{eval "$(rbenv init -)"}
-  if new_resource.rbenv_version
-    script << %{export RBENV_VERSION="#{new_resource.rbenv_version}"}
+  script << %{export NODENV_ROOT="#{nodenv_root}"}
+  script << %{export PATH="${NODENV_ROOT}/bin:$PATH"}
+  script << %{eval "$(nodenv init -)"}
+  if new_resource.nodenv_version
+    script << %{export NODENV_VERSION="#{new_resource.nodenv_version}"}
   end
   script << new_resource.code
   script.join("\n")
 end
 
 def build_script_environment
-  script_env = { 'RBENV_ROOT' => rbenv_root }
+  script_env = { 'NODENV_ROOT' => nodenv_root }
   if new_resource.environment
     script_env.merge!(new_resource.environment)
   end

@@ -1,7 +1,8 @@
 #
-# Cookbook Name:: rbenv
+# Cookbook Name:: nodenv
 # Recipe:: user_install
 #
+# Copyright 2013, John Bellone
 # Copyright 2011, Fletcher Nichol
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
@@ -17,26 +18,26 @@
 # limitations under the License.
 #
 
-include_recipe 'rbenv'
+include_recipe 'nodenv'
 
-install_rbenv_pkg_prereqs
+install_nodenv_pkg_prereqs
 
-template "/etc/profile.d/rbenv.sh" do
-  source  "rbenv.sh.erb"
+template "/etc/profile.d/nodenv.sh" do
+  source  "nodenv.sh.erb"
   owner   "root"
   mode    "0755"
-  only_if {node['rbenv']['create_profiled']}
+  only_if {node['nodenv']['create_profiled']}
 end
 
-Array(node['rbenv']['user_installs']).each do |rb_user|
+Array(node['nodenv']['user_installs']).each do |rb_user|
   upgrade_strategy  = build_upgrade_strategy(rb_user['upgrade'])
-  git_url           = rb_user['git_url'] || node['rbenv']['git_url']
-  git_ref           = rb_user['git_ref'] || node['rbenv']['git_ref']
+  git_url           = rb_user['git_url'] || node['nodenv']['git_url']
+  git_ref           = rb_user['git_ref'] || node['nodenv']['git_ref']
   home_dir          = rb_user['home'] || ::File.join(
-    node['rbenv']['user_home_root'], rb_user['user'])
-  rbenv_prefix      = rb_user['root_path'] || ::File.join(home_dir, '.rbenv')
+    node['nodenv']['user_home_root'], rb_user['user'])
+  nodenv_prefix      = rb_user['root_path'] || ::File.join(home_dir, '.nodenv')
 
-  install_or_upgrade_rbenv  :rbenv_prefix => rbenv_prefix,
+  install_or_upgrade_nodenv :nodenv_prefix => nodenv_prefix,
                             :home_dir => home_dir,
                             :git_url => git_url,
                             :git_ref => git_ref,

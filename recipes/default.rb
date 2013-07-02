@@ -1,5 +1,5 @@
 #
-# Cookbook Name:: rbenv
+# Cookbook Name:: nodenv
 # Recipe:: default
 #
 # Copyright 2011, Fletcher Nichol
@@ -19,5 +19,5 @@
 
 class Chef::Recipe
   # mix in recipe helpers
-  include Chef::Rbenv::RecipeHelpers
+  include Chef::Nodenv::RecipeHelpers
 end

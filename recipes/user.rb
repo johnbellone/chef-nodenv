@@ -1,7 +1,8 @@
 #
-# Cookbook Name:: rbenv
+# Cookbook Name:: nodenv
 # Recipe:: user
 #
+# Copyright 2013, John Bellone
 # Copyright 2010, 2011 Fletcher Nichol
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
@@ -17,47 +18,47 @@
 # limitations under the License.
 #
 
-include_recipe "rbenv::user_install"
+include_recipe "nodenv::user_install"
 
-Array(node['rbenv']['user_installs']).each do |rbenv_user|
-  rubies    = rbenv_user['rubies'] || node['rbenv']['user_rubies']
-  gem_hash  = rbenv_user['gems'] || node['rbenv']['user_gems']
+Array(node['nodenv']['user_installs']).each do |nodenv_user|
+  nodes    = nodenv_user['nodes'] || node['nodenv']['user_nodes']
+  npm_hash  = nodenv_user['npms'] || node['nodenv']['user_npms']
 
-  rubies.each do |rubie|
-    if rubie.is_a?(Hash)
-      rbenv_ruby "#{rubie} (#{rbenv_user['user']})" do
-        definition  rubie
-        user        rbenv_user['user']
-        root_path   rbenv_user['root_path'] if rbenv_user['root_path']
-        environment rubie['environment'] if rubie['environment']
+  nodes.each do |node|
+    if node.is_a?(Hash)
+      nodenv_ruby "#{node} (#{nodenv_user['user']})" do
+        definition  node
+        user        nodenv_user['user']
+        root_path   nodenv_user['root_path'] if nodenv_user['root_path']
+        environment node['environment'] if node['environment']
       end
     else
-      rbenv_ruby "#{rubie} (#{rbenv_user['user']})" do
-        definition  rubie
-        user        rbenv_user['user']
-        root_path   rbenv_user['root_path'] if rbenv_user['root_path']
+      nodenv_ruby "#{node} (#{nodenv_user['user']})" do
+        definition  node
+        user        nodenv_user['user']
+        root_path   nodenv_user['root_path'] if nodenv_user['root_path']
       end
     end
   end
 
-  rbenv_global "#{rbenv_user['global']} (#{rbenv_user['user']})" do
-    rbenv_version rbenv_user['global']
-    user          rbenv_user['user']
-    root_path     rbenv_user['root_path'] if rbenv_user['root_path']
+  nodenv_global "#{nodenv_user['global']} (#{nodenv_user['user']})" do
+    nodenv_version nodenv_user['global']
+    user          nodenv_user['user']
+    root_path     nodenv_user['root_path'] if nodenv_user['root_path']
 
-    only_if     { rbenv_user['global'] }
+    only_if     { nodenv_user['global'] }
   end
 
-  gem_hash.each_pair do |rubie, gems|
-    Array(gems).each do |gem|
-      rbenv_gem "#{gem['name']} (#{rbenv_user['user']})" do
-        package_name    gem['name']
-        user            rbenv_user['user']
-        root_path       rbenv_user['root_path'] if rbenv_user['root_path']
-        rbenv_version   rubie
+  npm_hash.each_pair do |node, npms|
+    Array(npms).each do |npm|
+      nodenv_npm "#{npm['name']} (#{nodenv_user['user']})" do
+        package_name    npm['name']
+        user            nodenv_user['user']
+        root_path       nodenv_user['root_path'] if nodenv_user['root_path']
+        nodenv_version   node
 
         %w{version action options source}.each do |attr|
-          send(attr, gem[attr]) if gem[attr]
+          send(attr, npm[attr]) if npm[attr]
         end
       end
     end
